@@ -1,12 +1,25 @@
-﻿using System;
+﻿using FluentAssertions;
+using RestSharp;
+using Xunit;
+using System;
 
 namespace Correios
 {
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+       private IRestResponse GetCEP(object CEP)
         {
-            Console.WriteLine("Hello World!");
+            var client = new RestClient("http://viacep.com.br/ws/" + CEP + "/json/");
+            var RSrequest = new RestRequest(Method.GET) { RequestFormat = DataFormat.Json };
+
+            return client.Execute(RSrequest);
+        }
+
+        [Fact]
+        public void sucesso()
+        {
+            var response = GetCEP("88040440");
+            response.StatusCode.Should().Be(200);
         }
     }
 }
